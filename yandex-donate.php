@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Яндекс Донат
-Description: Простое добавление на сайт кнопки Yandex для пожертвований.
+Description: Простое добавление на сайт кнопки Yandex пожертвований.
 Author: Konstantin Teplouxov
-Version: 0.1
+Version: 0.1.2
 Author URI: https://github.com/littlefreelancer
 License: GPLv2 or later
 */
@@ -12,6 +12,7 @@ $true_page = 'yandex-donate.php';
 add_action('admin_menu', 'true_options');
 add_action( 'admin_init', 'true_option_settings' );
 add_shortcode( 'yd-button-donate', 'yd_buttom_shortcode' );
+add_action( 'admin_print_footer_scripts', 'appthemes_add_quicktags' );
 
 function true_options() {
 	global $true_page;
@@ -72,4 +73,13 @@ function yd_buttom_shortcode()
 	$all_options = get_option('true_options');
 	$yandex_buttom_src = '<iframe src="https://money.yandex.ru/quickpay/button-widget?targets=%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%B6%D0%BA%D0%B0%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0&default-sum=' . $all_options['yd_summa'] . '&button-text=13&yamoney-payment-type=on&button-size=m&button-color=orange&successURL=&quickpay=small&account=' . $all_options['yd_account'] . '" width="184" height="36" frameborder="0" allowtransparency="true" scrolling="no"></iframe>';
 	return $yandex_buttom_src;
+}
+function appthemes_add_quicktags() {
+	if ( ! wp_script_is('quicktags') )
+		return;
+	?>
+	<script type="text/javascript">
+		QTags.addButton( 'yd_button', 'Я.Донат', '[yd-button-donate]' );
+	</script>
+	<?php
 }
