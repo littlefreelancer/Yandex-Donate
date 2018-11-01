@@ -111,7 +111,6 @@ class YDonate_Widget extends WP_Widget {
 			'Я.Донат',
 			array('description' => 'Кнопка Я.Донат')
 		);
-		// стили скрипты виджета, только если он активен
 		if ( is_active_widget( false, false, $this->id_base ) || is_customize_preview() ) {
 			add_action('wp_enqueue_scripts', array( $this, 'yd_add_my_widget_scripts' ));
 			add_action('wp_head', array( $this, 'yd_add_my_widget_style' ) );
