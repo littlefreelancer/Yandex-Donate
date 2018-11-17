@@ -5,7 +5,7 @@
 * Description: Позволяет собирать пожертвования на ваш Яндекс кошелек.
 * Author: Konstantin Teplouxov
 * Author URI:  https://vk.com/little.freelancer
-* Version: 0.1.3
+* Version: 0.1.4
 * License: GPLv2
 */
 $yd_url_setting = 'yandex-donate.php';
@@ -13,19 +13,19 @@ $yd_url_setting = 'yandex-donate.php';
 add_action( 'admin_menu' , 'yd_admin_menu' );
 add_action( 'admin_init', 'yd_option_settings' );
 add_shortcode( 'yd-button-donate', 'yd_button_shortcode' );
-add_action( 'admin_print_footer_scripts', 'appthemes_add_quicktags' );
+add_action( 'admin_print_footer_scripts', 'yd_appthemes_add_quicktags' );
 add_action( 'widgets_init', 'yd_register_widgets' );
 
 function yd_admin_menu()
 {
 	global $yd_url_setting;
-	add_menu_page('Я.Донат', 'Я.Донат', 'manage_options', $yd_url_setting, 'yd_option_page');
+	add_menu_page('Яндекс.Донат', 'Яндекс.Донат', 'manage_options', $yd_url_setting, 'yd_option_page');
 }
 function yd_option_page()
 {
 	global $yd_url_setting;
 	?><div class="wrap">
-		<h2>Настройки плагина 'Я.Донат'</h2>
+		<h2>Настройки плагина 'Яндекс.Донат'</h2>
 		<form method="post" enctype="multipart/form-data" action="options.php">
 			<?php 
 			settings_fields('yd_donate_group');
@@ -92,7 +92,7 @@ function yd_button_shortcode()
 
 	return $yandex_buttom_src;
 }
-function appthemes_add_quicktags() {
+function yd_appthemes_add_quicktags() {
 	if ( ! wp_script_is('quicktags') )
 		return;
 	?>
@@ -108,13 +108,9 @@ class YDonate_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'',
-			'Я.Донат',
+			'Яндекс.Донат',
 			array('description' => 'Кнопка Я.Донат')
 		);
-		if ( is_active_widget( false, false, $this->id_base ) || is_customize_preview() ) {
-			add_action('wp_enqueue_scripts', array( $this, 'yd_add_my_widget_scripts' ));
-			add_action('wp_head', array( $this, 'yd_add_my_widget_style' ) );
-		}
 	}
 	function widget( $args, $instance ){
 		$title = apply_filters( 'widget_title', $instance['title'] );
@@ -127,22 +123,5 @@ class YDonate_Widget extends WP_Widget {
 		echo do_shortcode('[yd-button-donate]');
 
 		echo $args['after_widget'];
-	}
-	function yd_add_my_widget_scripts() {
-		if( ! apply_filters( 'show_my_widget_script', true, $this->id_base ) )
-		{
-			return;
-		}
-		$theme_url = get_stylesheet_directory_uri();
-		wp_enqueue_script('my_widget_script', $theme_url .'/my_widget_script.js' );
-	}
-	function yd_add_my_widget_style() {
-		if( ! apply_filters( 'show_my_widget_style', true, $this->id_base ) )
-			return;
-		?>
-		<style>
-			.my_widget a{ display:inline; }
-		</style>
-		<?php
 	}
 }
